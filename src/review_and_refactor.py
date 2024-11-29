@@ -8,16 +8,17 @@ def review_and_refactor_code(file_path):
     with open(file_path, 'r') as file:
         code = file.read()
 
-    response = openai.Completion.create(
-        engine="davinci-codex",
-        prompt=f"Review and refactor the following code:\n\n{code}",
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"Review and refactor the following code:\n\n{code}"}
+        ],
         max_tokens=1500,
-        n=1,
-        stop=None,
         temperature=0.5,
     )
 
-    suggestions = response.choices[0].text.strip()
+    suggestions = response.choices[0].message['content'].strip()
     print(f"Suggestions for {file_path}:\n{suggestions}")
 
 if __name__ == "__main__":
